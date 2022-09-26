@@ -5,6 +5,7 @@ import AddTransactionForm from "./AddTransactionForm";
 
 function AccountContainer() {
   const [transactions, setTransactions] = useState([]);
+  const [search, setSearch] = useState("");
   useEffect(() => {
     fetch("http://localhost:8001/transactions")
       .then((res) => res.json())
@@ -31,18 +32,16 @@ function AccountContainer() {
   }
 
   function searchHandler(e) {
-    setTransactions((transactions) => {
-      return transactions.filter((transaction) => {
-        return transaction.description.toLowerCase().includes(e.target.value.toLowerCase());
-      });
-    });
+    setSearch(e.target.value);
   }
+
+  const filteredTransactions = transactions.filter((transaction) => transaction.description.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
 
   return (
     <div>
-      <Search searchHandler={searchHandler} />
+      <Search search={search} searchHandler={searchHandler} />
       <AddTransactionForm addTransaction={addTransaction} />
-      <TransactionsList transactions={transactions} />
+      <TransactionsList transactions={filteredTransactions} />
     </div>
   );
 }
